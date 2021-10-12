@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealsRepository;
@@ -8,16 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class MealsService implements MealsRepository {
-    public static void main(String[] args) {
-        MealsRepository repo = new MealsService();
+public class MealsRepositoryInMemory implements MealsRepository {
 
-        System.out.println(MealsUtil.filteredByStreams(repo.getAllMeals(), 2000));
-    }
-
-    public int mealIdCounter = 0;
+    public AtomicInteger mealIdCounter = new AtomicInteger(0);
     public Map<Integer, Meal> mealsWithId = new ConcurrentHashMap<>();
 
     {
@@ -33,12 +29,12 @@ public class MealsService implements MealsRepository {
 
     @Override
     public Meal save(Meal meal) {
-        if (meal.getId() == 0) {
-            meal.setId(mealIdCounter++);
+        if (meal.getId() == null) {
+            meal.setId(mealIdCounter.incrementAndGet());
             mealsWithId.put(meal.getId(), meal);
             return meal;
         } else {
-            return mealsWithId.computeIfPresent(meal.getId(), (id, mealBeforeChanges) -> mealBeforeChanges = meal);
+            return mealsWithId.computeIfPresent(meal.getId(), (id, mealBeforeChanges) -> meal);
         }
     }
 

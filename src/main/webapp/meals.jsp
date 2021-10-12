@@ -38,7 +38,6 @@
             <td><c:out value="${meal.calories}"/></td>
             <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
             <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
-
         </tr>
     </c:forEach>
 </table>

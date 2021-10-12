@@ -9,8 +9,16 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr>
-    <h2>Create or edit meal</h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    <c:if test="${meal.id == null}">
+        <p>
+        <h2>Create</h2></p>
+    </c:if>
+    <c:if test="${meal.id != null}">
+        <p>
+        <h2>Update</h2></p>
+    </c:if>
+    <h2></h2>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

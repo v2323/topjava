@@ -45,7 +45,7 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
-    public static Map<LocalDate, Integer> groupingByDate(List<Meal> meals) {
+    private static Map<LocalDate, Integer> groupingByDate(List<Meal> meals) {
         return meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))

@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealsRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
@@ -11,10 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class MealsRepositoryInMemory implements MealsRepository {
+public class InMemoryMealsRepository implements MealsRepository {
 
-    public AtomicInteger mealIdCounter = new AtomicInteger(0);
-    public Map<Integer, Meal> mealsWithId = new ConcurrentHashMap<>();
+    private AtomicInteger mealIdCounter = new AtomicInteger(0);
+    private Map<Integer, Meal> mealsWithId = new ConcurrentHashMap<>();
 
     {
         for (Meal meal : MealsUtil.meals) {

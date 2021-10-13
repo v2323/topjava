@@ -33,11 +33,11 @@
     <c:forEach items="${meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr class="${meal.excess ? 'excess_true' : 'excess_false'}">
-            <td><c:out value="${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}"/></td>
-            <td><c:out value="${meal.description}"/></td>
-            <td><c:out value="${meal.calories}"/></td>
+            <td>${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
             <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
-            <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
+            <td><a href="meals?action=edit&id=${meal.id}">Edit</a></td>
         </tr>
     </c:forEach>
 </table>

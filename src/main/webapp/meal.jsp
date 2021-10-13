@@ -10,15 +10,7 @@
     <h3><a href="index.html">Home</a></h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <c:if test="${meal.id == null}">
-        <p>
-        <h2>Create</h2></p>
-    </c:if>
-    <c:if test="${meal.id != null}">
-        <p>
-        <h2>Update</h2></p>
-    </c:if>
-    <h2></h2>
+    <h2><c:out value="${meal.id eq null ? 'Create': 'Update'}"/></h2>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

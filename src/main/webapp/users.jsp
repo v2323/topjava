@@ -22,6 +22,8 @@
     <hr/>
     <h2>Users</h2>
     <a href="users?action=create">Add User</a>
+    <a href="users?action=getAll">Зайти как Admin</a>
+    <a href="users?action=getByEmail">Зайти как User</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -29,8 +31,10 @@
             <th>Registration Date</th>
             <th>Username</th>
             <th>E-mail</th>
-<%--            <th>UserId</th>--%>
-<%--            <th></th>--%>
+            ${param.action == 'getAll' ? '<th>Delete</th>' : ''}
+            ${param.action == 'getAll' ? '<th>Edit</th>' : ''}
+<%--            <th>Delete</th>--%>
+<%--            <th>Edit</th>--%>
 <%--            <th></th>--%>
         </tr>
         </thead>
@@ -46,8 +50,15 @@
                 </td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
-<%--                <td><a href="meals?action=update&id=${meal.id}">Update</a></td>--%>
-<%--                <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>--%>
+                    ${param.action == 'getAll' ? '<td><a href="users?action=update&id=${user.id}">Delete</a></td>' : ''}
+                    ${user.roles eq 'USER' ? '<td><a href="users?action=update&id=${user.id}">Delete</a></td>': ''}
+                <td><a href="users?action=update&id=${user.id}">Update</a></td>
+<%--                    <td></td>--%>
+<%--&lt;%&ndash;                    ${param.action == 'getAll' ? '<th>Edit</th>' : ''}&ndash;%&gt;--%>
+<%--                <td>type="<c:out value="${user.roles eq 'ADMIN' ? 'users?action=update&id=${user.id}': ''}"/>"</td>--%>
+<%--                <td><a href="users?action=update&id=${user.id}">Delete</a></td>--%>
+<%--                <td><a href=<c:out value="${user.roles eq 'ADMIN' ? 'users?action=update&id=${user.id}': ''}"/>>Update</a></td>--%>
+<%--&lt;%&ndash;                <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>&ndash;%&gt;--%>
             </tr>
         </c:forEach>
     </table>

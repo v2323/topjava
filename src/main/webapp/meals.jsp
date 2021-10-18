@@ -22,6 +22,9 @@
     <hr/>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
+    <a href="meals?action=all&userId=1">Зайти как Admin</a>
+    <a href="meals?action=all&userId=2">Зайти как User</a>
+    <a href="meals?action=all&userId=3">Зайти как User2</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -46,8 +49,8 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>${meal.userId}</td>
-                <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
-                <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
+                <td><a href="meals?action=update&id=${meal.id}&userId=${meal.userId}">Update</a></td>
+                <td><a href="meals?action=delete&id=${meal.id}&userId=${meal.userId}">Delete</a></td>
             </tr>
         </c:forEach>
     </table>

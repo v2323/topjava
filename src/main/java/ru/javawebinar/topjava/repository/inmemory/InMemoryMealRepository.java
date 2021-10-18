@@ -5,45 +5,64 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealRepository implements MealRepository {
-    private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+    private final Map<Integer,Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(this::save);
+        MealsUtil.meals.forEach(meal -> save(meal,2));
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 1, 10, 0),"Завтрак", 1000),1);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 1, 13, 0),"Обед", 800),1);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 1, 18, 0),"Ужин", 600),1);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 2, 10, 0),"Завтрак", 900),3);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 2, 13, 0),"Обед", 1200),3);
+        save(new Meal(LocalDateTime.of(2020, Month.FEBRUARY, 2, 18, 0),"Ужин", 700),3);
+
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, Integer userId) {
+        Map<Integer, Meal> repositoryWithoutUserId = repository.computeIfAbsent(userId, ConcurrentHashMap::new);;
         if (meal.isNew()) {
+//            repository.putIfAbsent(userId,repositoryWithoutUserId);
             meal.setId(counter.incrementAndGet());
-            meal.setUserId(1);
-            System.out.println(meal.getUserId());
-            repository.put(meal.getId(), meal);
+            meal.setUserId(userId);
+            repositoryWithoutUserId.put(meal.getId(), meal);
+            repository.put(userId, repositoryWithoutUserId);
             return meal;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        repository.computeIfPresent(userId,
+                (uId, repositoryWithoutUId) -> {
+                    repositoryWithoutUId.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return repositoryWithoutUId;});
+
+        return meal;
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int id, int userId) {
+        return repository.get(userId) != null && repository.get(userId).remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int id, int userId) {
+        return repository.get(userId) != null ? repository.get(userId).get(id) : null;
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+    public Collection<Meal> getAll(int userId) {
+        Map <Integer, Meal> meals = repository.get(userId);
+        System.out.println(meals.values());
+        return meals!=null ? meals.values() : new ArrayList<>();
     }
 }
 

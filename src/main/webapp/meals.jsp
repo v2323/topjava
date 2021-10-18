@@ -25,6 +25,7 @@
     <a href="meals?action=all&userId=1">Зайти как Admin</a>
     <a href="meals?action=all&userId=2">Зайти как User</a>
     <a href="meals?action=all&userId=3">Зайти как User2</a>
+
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -55,5 +56,16 @@
         </c:forEach>
     </table>
 </section>
+<form method="get" action="meals">
+    <dl>
+        <dt>Start:</dt>
+        <dd><input type="datetime-local" value="${meal.dateTime}" name="startDateTime" required></dd>
+    </dl>
+    <dl>
+        <dt>End:</dt>
+        <dd><input type="datetime-local" value="${meal.dateTime}" name="endDateTime" required></dd>
+    </dl>
+    <a href="meals?action=allBetweenHalfOpen&userId=2">Фильтр</a>
+</form>
 </body>
 </html>

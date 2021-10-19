@@ -28,12 +28,10 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRepository repository;
-    private UserRepository userRepository;
 
     @Override
     public void init() {
         repository = new InMemoryMealRepository();
-        userRepository = new InMemoryUserRepository();
     }
 
     @Override
@@ -58,7 +56,7 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        switch (action == null ? "all" : action) {
+        switch (action == null ? "getAllBetweenHalfOpen" : action) {
             case "delete":
                 int id = getId(request);
                 int userId = getUserId(request);
@@ -76,8 +74,16 @@ public class MealServlet extends HttpServlet {
                 break;
             case "allBetweenHalfOpen":
                 log.info("getAllBetweenHalfOpen");
+                if(request.getParameter("startTime")!=null && request.getParameter("endTime")!=null){
+                    System.out.println(request.getParameter("startTime"));
+                    System.out.println(request.getParameter("endTime"));
                 request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),getStart(),getEnd()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),LocalTime.parse(request.getParameter("startTime")),LocalTime.parse(request.getParameter("endTime"))), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                }
+                else {
+                    request.setAttribute("meals",
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),LocalTime.of(0, 0),LocalTime.of(23, 59)), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                }
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":

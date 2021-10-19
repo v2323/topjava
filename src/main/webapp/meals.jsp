@@ -25,6 +25,20 @@
     <a href="meals?action=all&userId=1">Зайти как Admin</a>
     <a href="meals?action=all&userId=2">Зайти как User</a>
     <a href="meals?action=all&userId=3">Зайти как User2</a>
+    <form method="get" action="meals">
+        <p>
+            <label for="startTime">Время: </label>
+            <input type="time" id="startTime" name="startTime"/>
+        </p>
+        <p>
+            <label for="endTime">Время: </label>
+            <input type="time" id="endTime" name="endTime"/>
+        </p>
+        <p>
+            <a href="meals?action=allBetweenHalfOpen&userId=2&endTime=${endTime}&startTime=${startTime}">Фильтр</a>
+            <button type="submit">Отправить</button>
+        </p>
+    </form>
 
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
@@ -39,12 +53,9 @@
         </tr>
         </thead>
         <c:forEach items="${meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
-                        <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                        <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                        <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
                         ${fn:formatDateTime(meal.dateTime)}
                 </td>
                 <td>${meal.description}</td>
@@ -56,16 +67,25 @@
         </c:forEach>
     </table>
 </section>
-<form method="get" action="meals">
-    <dl>
-        <dt>Start:</dt>
-        <dd><input type="datetime-local" value="${meal.dateTime}" name="startDateTime" required></dd>
-    </dl>
-    <dl>
-        <dt>End:</dt>
-        <dd><input type="datetime-local" value="${meal.dateTime}" name="endDateTime" required></dd>
-    </dl>
-    <a href="meals?action=allBetweenHalfOpen&userId=2">Фильтр</a>
+<table border="1" cellpadding="8" cellspacing="8">
+    <form>
+        <thead>
+        <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>UserId</th>
+        </tr>
+        </thead>
+        <tr>
+            <input type="hidden" name="action" value="allBetweenHalfOpen">
+            <td><input type="time" name="startTime"/></td>
+            <td><input type="time" name="endTime"/></td>
+            <td><input type="number" name="userId" /></td>
+        </tr>
+        <button type="submit">Фильтр по времени</button>
+    </form>
+</table>
+<%--<a href="meals?action=allBetweenHalfOpen&userId=2&startTime=${availableStart}&endTime=${availableEnd}">Фильтр</a>--%>
 </form>
 </body>
 </html>

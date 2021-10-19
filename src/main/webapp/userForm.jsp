@@ -32,31 +32,21 @@
     <form method="post" action="users">
         <input type="hidden" name="id" value="${user.id}">
         <dl>
-        <dt>UserName:</dt>
-        <dd><input type="text" value="${user.name}" size=40 name="description" required></dd>
+            <dt>Username:</dt>
+            <dd><input type="text" value="${user.name}" name="name" required></dd>
         </dl>
         <dl>
             <dt>Email:</dt>
-            <dd><input type="text" value="${user.email}" size=40 name="description" required></dd>
+            <dd><input type="text" value="${user.email}" size=40 name="email" required></dd>
         </dl>
         <dl>
             <dt>Password:</dt>
-            <dd><input type="text" value="${user.password}" size=40 name="description" required></dd>
+            <dd><input type="text" value="${user.password}" name="password" required></dd>
         </dl>
-        </dl>
-<%--        <dl>--%>
-<%--            <dt>Calories:</dt>--%>
-<%--            <dd><input type="number" value="${user.caloriesPerDay}" name="calories" required></dd>--%>
-<%--        </dl>--%>
         <dl>
-            <dt>Roles:</dt>
-            <dd><input type="text" value="${user.roles}" size=40 name="description" required></dd>
+            <dt>Role:</dt>
+            <dd><input type="text" value="${user.roles}" name="roles" required></dd>
         </dl>
-        </dl>
-<%--        <dl>--%>
-<%--            <dt>Date:</dt>--%>
-<%--            <dd><input type="date" value="${user.registered}" name="date" required></dd>--%>
-<%--        </dl>--%>
         <button type="submit">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </form>

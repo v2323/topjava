@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -17,12 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -74,15 +67,19 @@ public class MealServlet extends HttpServlet {
                 break;
             case "allBetweenHalfOpen":
                 log.info("getAllBetweenHalfOpen");
-                if(request.getParameter("startTime")!=null && request.getParameter("endTime")!=null){
+                if (request.getParameter("startTime") != null && request.getParameter("endTime") != null) {
                     System.out.println(request.getParameter("startTime"));
                     System.out.println(request.getParameter("endTime"));
-                request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),LocalTime.parse(request.getParameter("startTime")),LocalTime.parse(request.getParameter("endTime"))), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-                }
-                else {
                     request.setAttribute("meals",
-                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),LocalTime.of(0, 0),LocalTime.of(23, 59)), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),
+                                    LocalTime.parse(request.getParameter("startTime")),
+                                    LocalTime.parse(request.getParameter("endTime"))),
+                                    MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                } else {
+                    request.setAttribute("meals",
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),
+                                    LocalTime.of(0, 0), LocalTime.of(23, 59)),
+                                    MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 }
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
@@ -93,16 +90,6 @@ public class MealServlet extends HttpServlet {
                         MealsUtil.getTos(repository.getAll(getUserId(request)), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
-//                log.info("getAll");
-//                if(request.getParameter("userId")!=null && !request.getParameter("userId").isEmpty()){
-//                request.setAttribute("meals",
-//                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY).stream().filter(mealTo -> mealTo.getUserId()==Integer.parseInt(request.getParameter("userId"))).collect(Collectors.toList()));
-//                } else {
-//                    request.setAttribute("meals",
-//                            MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-//                }
-//                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-//                break;
         }
     }
 
@@ -117,18 +104,5 @@ public class MealServlet extends HttpServlet {
         }
         String paramUserId = Objects.requireNonNull(request.getParameter("userId"));
         return Integer.parseInt(paramUserId);
-    }
-
-    private LocalTime getStart() {
-//        String paramStart = Objects.requireNonNull(request.getParameter("start"));
-//        return LocalTime.parse(paramStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-//        return LocalTime.parse(paramStart);
-        return LocalTime.parse("2020-01-30 09:00" ,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    }
-
-    private LocalTime getEnd() {
-//        String paramEnd = Objects.requireNonNull(request.getParameter("end"));
-        return LocalTime.parse("2020-01-30 13:30" ,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-//        return LocalTime.parse(paramEnd);
     }
 }

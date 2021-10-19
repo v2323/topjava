@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
-<%--<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>--%>
 <html>
 <head>
     <title>Meal list</title>
@@ -80,12 +79,11 @@
             <input type="hidden" name="action" value="allBetweenHalfOpen">
             <td><input type="time" name="startTime"/></td>
             <td><input type="time" name="endTime"/></td>
-            <td><input type="number" name="userId" /></td>
+            <td><input type="number" name="userId"/></td>
         </tr>
         <button type="submit">Фильтр по времени</button>
     </form>
 </table>
-<%--<a href="meals?action=allBetweenHalfOpen&userId=2&startTime=${availableStart}&endTime=${availableEnd}">Фильтр</a>--%>
 </form>
 </body>
 </html>

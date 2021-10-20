@@ -41,8 +41,8 @@
                 </td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
-                <td><a href="users?action=delete&id=${user.id}">Delete</a></td>
-                <td><a href="users?action=update&id=${user.id}">Edit</a></td>
+                    ${param.action == 'enterAsAdmin' ? '<td><a href="users?action=delete&id=1">Delete</a></td>' : ''}
+                    ${param.action == 'enterAsAdmin' ? '<td><a href="users?action=update&id=1">Edit</a></td>' : ''}
             </tr>
         </c:forEach>
     </table>

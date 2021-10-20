@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -31,7 +32,7 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        Integer userId = Integer.parseInt(request.getParameter("userId"));
+        int userId = getUserId();
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -52,7 +53,7 @@ public class MealServlet extends HttpServlet {
         switch (action == null ? "getAllBetweenHalfOpen" : action) {
             case "delete":
                 int id = getId(request);
-                int userId = getUserId(request);
+                int userId = getUserId();
                 log.info("Delete {}", id);
                 repository.delete(id, userId);
                 response.sendRedirect("meals");
@@ -61,23 +62,37 @@ public class MealServlet extends HttpServlet {
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        repository.get(getId(request), getUserId(request));
+                        repository.get(getId(request), getUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "allBetweenHalfOpen":
                 log.info("getAllBetweenHalfOpen");
                 if (request.getParameter("startTime") != null && request.getParameter("endTime") != null) {
-                    System.out.println(request.getParameter("startTime"));
-                    System.out.println(request.getParameter("endTime"));
                     request.setAttribute("meals",
-                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(),
                                     LocalTime.parse(request.getParameter("startTime")),
                                     LocalTime.parse(request.getParameter("endTime"))),
                                     MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 } else {
                     request.setAttribute("meals",
-                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(request),
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(),
+                                    LocalTime.of(0, 0), LocalTime.of(23, 59)),
+                                    MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                }
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            case "allBetweenDates":
+                log.info("getAllBetweenDates");
+                if (request.getParameter("startDate") != null && request.getParameter("endDate") != null) {
+                    request.setAttribute("meals",
+                            MealsUtil.getTos(repository.getAllBetweenDates(getUserId(),
+                                    LocalDate.parse(request.getParameter("startDate")),
+                                    LocalDate.parse(request.getParameter("endDate"))),
+                                    MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                } else {
+                    request.setAttribute("meals",
+                            MealsUtil.getTos(repository.getAllBetweenHalfOpen(getUserId(),
                                     LocalTime.of(0, 0), LocalTime.of(23, 59)),
                                     MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 }
@@ -87,7 +102,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAll(getUserId(request)), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(repository.getAll(getUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -98,11 +113,7 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    private int getUserId(HttpServletRequest request) {
-        if (request.getParameter("userId") == null) {
-            return 1;
-        }
-        String paramUserId = Objects.requireNonNull(request.getParameter("userId"));
-        return Integer.parseInt(paramUserId);
+    private int getUserId() {
+        return SecurityUtil.authUserId();
     }
 }

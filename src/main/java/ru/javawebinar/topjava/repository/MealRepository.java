@@ -2,8 +2,10 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 public interface MealRepository {
@@ -17,9 +19,11 @@ public interface MealRepository {
     Meal get(int id, int userId);
 
     // ORDERED dateTime desc
-    Collection<Meal> getAll(int userId);
+    List<Meal> getAll(int userId);
 
-    Collection<Meal> getAllBetweenHalfOpen(int userId, LocalTime start, LocalTime end);
+    List<Meal> getAllBetweenHalfOpen(int userId, LocalTime start, LocalTime end);
 
-    public Collection<Meal> getAllByPredicate(int userId, Predicate<Meal> filter);
+    List<Meal> getAllBetweenDates(int userId, LocalDate start, LocalDate end);
+
+    List<Meal> getAllByPredicate(int userId, Predicate<Meal> filter);
 }

@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
@@ -35,7 +36,6 @@ public class InMemoryMealRepository implements MealRepository {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
             fillableRepository.put(meal.getId(), meal);
-//            repository.put(userId, fillableRepository);
             return meal;
         }
         // handle case: update, but not present in storage
@@ -60,15 +60,19 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return getAllByPredicate(userId, meal -> true);
     }
-    public Collection<Meal> getAllBetweenHalfOpen(int userId, LocalTime start, LocalTime end) {
+
+    public List<Meal> getAllBetweenHalfOpen(int userId, LocalTime start, LocalTime end) {
         return getAllByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), start, end));
+    }
+    public List<Meal> getAllBetweenDates(int userId, LocalDate start, LocalDate end) {
+        return getAllByPredicate(userId, meal -> DateTimeUtil.isBetweenDates(meal.getDateTime().toLocalDate(), start, end));
     }
 
     @Override
-    public Collection<Meal> getAllByPredicate(int userId, Predicate<Meal> filter) {
+    public List<Meal> getAllByPredicate(int userId, Predicate<Meal> filter) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals != null ? meals.values().stream()
                 .filter(filter)

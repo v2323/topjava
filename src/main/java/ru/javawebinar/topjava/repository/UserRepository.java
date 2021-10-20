@@ -20,5 +20,4 @@ public interface UserRepository {
 
     List<User> getAll();
 
-//    User getCurrentUser();
 }

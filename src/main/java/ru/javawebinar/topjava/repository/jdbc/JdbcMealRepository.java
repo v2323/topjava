@@ -9,11 +9,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
@@ -59,30 +57,22 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update(String.format("DELETE FROM meals WHERE id=%s and user_id=%s",id, userId)) != 0;
-//        return jdbcTemplate.update("DELETE FROM meals WHERE id=?", id) != 0;
+        return jdbcTemplate.update(String.format("DELETE FROM meals WHERE id=%s and user_id=%s", id, userId)) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query(String.format("SELECT * FROM meals WHERE id=%s and user_id=%s",id, userId), ROW_MAPPER);
-//        List<Meal> meals = jdbcTemplate.query(String.format("SELECT * FROM meals WHERE id=%s ORDER BY description",id), ROW_MAPPER);
+        List<Meal> meals = jdbcTemplate.query(String.format("SELECT * FROM meals WHERE id=%s and user_id=%s", id, userId), ROW_MAPPER);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-//        return jdbcTemplate.query(String.format("SELECT * FROM meals WHERE user_id=%s ORDER BY description", userId), ROW_MAPPER);
         return jdbcTemplate.query(String.format("SELECT * FROM meals WHERE user_id=%s ORDER BY date_time DESC", userId), ROW_MAPPER);
-
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-//        LocalDateTime start = startDateTime;
-//        System.out.println(start);
-//        LocalDateTime end = endDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm"));
-//        System.out.println(end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm")));
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND date_time >= ? AND date_time < ?", ROW_MAPPER,userId,startDateTime,endDateTime);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND date_time >= ? AND date_time < ?", ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }

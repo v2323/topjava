@@ -38,7 +38,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if(userId== SecurityUtil.authUserId()) {
+        if (userId == SecurityUtil.authUserId()) {
             MapSqlParameterSource map = new MapSqlParameterSource()
                     .addValue("id", meal.getId())
                     .addValue("dateTime", meal.getDateTime())
@@ -69,7 +69,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? and user_id=?",ROW_MAPPER, id, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? and user_id=?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 

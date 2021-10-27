@@ -9,14 +9,18 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -35,6 +39,8 @@ public class MealServiceTest {
 
     @Test
     public void get() {
+        Meal expected = service.get(MEAL_ID, USER_ID);
+        assertMatch(userMeal1, expected);
     }
 
     @Test
@@ -45,6 +51,17 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
+        List<Meal> expected = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
+        Collections.reverse(expected);
+        assertMatch(mealsBetweenInclusiveDates, expected);
+    }
+
+    @Test
+    public void getBetweenInclusiveDateTime() {
+        List<Meal> expected = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
+        Collections.reverse(expected);
+        List<MealTo> expectedTo = MealsUtil.getFilteredTos(expected, CALORIES_PER_DAY, START_TIME, END_TIME);
+        assertThat(mealsBetweenInclusiveDateTime).usingRecursiveComparison().isEqualTo(expectedTo);
     }
 
     @Test
@@ -69,5 +86,30 @@ public class MealServiceTest {
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
         assertMatch(all, meals);
+    }
+
+    @Test
+    public void deleteByInvalidId() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
+    }
+
+    @Test
+    public void getByInvalidId() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
+    }
+
+    @Test
+    public void getByAlienId() {
+        assertThrows(NotFoundException.class, () -> service.get(MEAL_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void deleteByAlienId() {
+        assertThrows(NotFoundException.class, () -> service.delete(MEAL_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void updateByAlienId() {
+        assertThrows(NotFoundException.class, () -> service.update(userMeal1, ADMIN_ID));
     }
 }

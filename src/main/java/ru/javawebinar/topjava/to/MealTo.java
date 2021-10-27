@@ -41,7 +41,6 @@ public class MealTo {
         return excess;
     }
 
-
     @Override
     public String toString() {
         return "MealTo{" +

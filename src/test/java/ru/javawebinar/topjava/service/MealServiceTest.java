@@ -9,14 +9,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -52,16 +48,13 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         List<Meal> expected = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
-        Collections.reverse(expected);
         assertMatch(mealsBetweenInclusiveDates, expected);
     }
 
     @Test
-    public void getBetweenInclusiveDateTime() {
-        List<Meal> expected = service.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
-        Collections.reverse(expected);
-        List<MealTo> expectedTo = MealsUtil.getFilteredTos(expected, CALORIES_PER_DAY, START_TIME, END_TIME);
-        assertThat(mealsBetweenInclusiveDateTime).usingRecursiveComparison().isEqualTo(expectedTo);
+    public void getBetweenInclusiveNull() {
+        List<Meal> expected = service.getBetweenInclusive(null, null, USER_ID);
+        assertMatch(meals, expected);
     }
 
     @Test
@@ -69,7 +62,7 @@ public class MealServiceTest {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         int id = updated.getId();
-        assertMatch(service.get(id, USER_ID), getUpdated());
+        assertMatch(getUpdated(), service.get(id, USER_ID));
     }
 
     @Test
@@ -85,7 +78,7 @@ public class MealServiceTest {
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
-        assertMatch(all, meals);
+        assertMatch(meals, all);
     }
 
     @Test
@@ -110,6 +103,6 @@ public class MealServiceTest {
 
     @Test
     public void updateByAlienId() {
-        assertThrows(NotFoundException.class, () -> service.update(userMeal1, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.update(adminMeal1, USER_ID));
     }
 }

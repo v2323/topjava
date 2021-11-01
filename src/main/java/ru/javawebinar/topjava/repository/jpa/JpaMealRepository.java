@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class JpaMealRepository implements MealRepository {
             meal.setUser(em.getReference(User.class, userId));
             em.persist(meal);
             return meal;
-        } else if(get(meal.getId(), userId)==null) {
+        } else if (get(meal.getId(), userId) == null) {
             return null;
         } else {
             meal.setUser(em.getReference(User.class, userId));
@@ -42,7 +41,7 @@ public class JpaMealRepository implements MealRepository {
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
-                .executeUpdate() !=0;
+                .executeUpdate() != 0;
     }
 
     @Override
@@ -57,14 +56,14 @@ public class JpaMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
 
-        return em.createNamedQuery(Meal.ALL_SORTED,Meal.class)
+        return em.createNamedQuery(Meal.ALL_SORTED, Meal.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return em.createNamedQuery(Meal.GET_BETWEEN,Meal.class)
+        return em.createNamedQuery(Meal.GET_BETWEEN, Meal.class)
                 .setParameter("userId", userId)
                 .setParameter(1, startDateTime)
                 .setParameter(2, endDateTime)

@@ -40,24 +40,18 @@ public class MealServiceTest {
     public final Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String testInfo = String.format("\n %s      : %d ms        \n"
+            String testInfo = String.format("\n%24s : %d ms"
                     , description.getMethodName(), TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS));
             summary.append(testInfo);
-            log.info(testInfo);
+            log.info("\033[0;33m" + testInfo);
         }
     };
-//    public final TestWatcher testWatcher = new TestWatcher() {
-//        @Override
-//        protected void finished(Description description) {
-//            super.finished(description);
-//        }
-//    };
 
     @AfterClass
     public static void allSummary() {
-        log.info("\n *****   Tests Info   ***** \n"
-                + "\nTestMethod       :    Time         \n"
-                + summary);
+        log.info(String.format("\n\033[0;33m%38s", "*****   Tests Info   *****")
+                + String.format("\n\033[0;32m%24s : %s", "TestMethod", "Time")
+                + "\033[0m" + summary);
     }
 
     @Autowired
@@ -94,7 +88,6 @@ public class MealServiceTest {
         assertThrows(DataAccessException.class, () ->
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
-
 
     @Test
     public void get() {

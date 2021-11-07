@@ -31,7 +31,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 //@ActiveProfiles("postgres")
-public class UserServiceTest {
+public abstract class UserServiceTest {
 
     static {
         // Only for postgres driver logging

@@ -1,26 +1,10 @@
 package ru.javawebinar.topjava.service.jdbc;
 
 import org.junit.Test;
+import org.springframework.test.context.ActiveProfiles;
+import ru.javawebinar.topjava.service.UserServiceTest;
 
-public class JdbcUserServiceTest {
+@ActiveProfiles("jdbc")
+public class JdbcUserServiceTest extends UserServiceTest {
 
-    @Test
-    public void save() {
-    }
-
-    @Test
-    public void delete() {
-    }
-
-    @Test
-    public void get() {
-    }
-
-    @Test
-    public void getByEmail() {
-    }
-
-    @Test
-    public void getAll() {
-    }
 }

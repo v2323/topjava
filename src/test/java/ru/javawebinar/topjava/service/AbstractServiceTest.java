@@ -37,8 +37,8 @@ public abstract class AbstractServiceTest {
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
-    public boolean checkJpaProfiles (){
-        return env.acceptsProfiles(Profiles.of(ru.javawebinar.topjava.Profiles.JPA,ru.javawebinar.topjava.Profiles.DATAJPA));
+    public boolean checkJpaProfiles() {
+        return env.acceptsProfiles(Profiles.of(ru.javawebinar.topjava.Profiles.JPA, ru.javawebinar.topjava.Profiles.DATAJPA));
     }
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778

@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,8 +13,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -85,10 +82,11 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        HashMap<Integer, List<Role>> userRoles = new HashMap<>();
+        HashMap<Integer, ArrayList<Role>> userRoles = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_roles", rs ->
         {
-            userRoles.put(rs.getInt("user_id"), List.of(Role.valueOf(rs.getString("role"))));
+            userRoles.computeIfAbsent(rs.getInt("user_id"), uId -> new ArrayList<>())
+                    .add(Role.valueOf(rs.getString("role")));
         });
         for (User user : users) {
             user.setRoles(userRoles.get(user.id()));
@@ -96,7 +94,7 @@ public class JdbcUserRepository implements UserRepository {
         return users;
     }
 
-    public void addRolesIntoTable(User user) {
+    private void addRolesIntoTable(User user) {
         Set<Role> roles = user.getRoles();
         if (!roles.isEmpty()) {
             int batchSize = roles.size();
@@ -107,12 +105,11 @@ public class JdbcUserRepository implements UserRepository {
         }
     }
 
-    public void deleteRoles(User user) {
+    private void deleteRoles(User user) {
         jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.id());
-
     }
 
-    public User getWithRoles(User user) {
+    private User getWithRoles(User user) {
         if (user != null) {
             user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", Role.class, user.id()));
         }

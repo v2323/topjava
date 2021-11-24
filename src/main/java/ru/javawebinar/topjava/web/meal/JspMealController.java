@@ -49,7 +49,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PostMapping("/meals")
+    @PostMapping()
     public String save(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),

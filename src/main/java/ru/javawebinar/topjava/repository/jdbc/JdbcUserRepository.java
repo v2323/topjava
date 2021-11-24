@@ -16,6 +16,8 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -49,12 +51,16 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update("""
-                   UPDATE users SET name=:name, email=:email, password=:password, 
-                   registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0) {
-            return null;
+        } else {
+            if (namedParameterJdbcTemplate.update("""
+                       UPDATE users SET name=:name, email=:email, password=:password, 
+                       registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
+                    """, parameterSource) == 0) {
+                return null;
+            }
+            deleteRoles(user);
         }
+        addRolesIntoTable(user);
         return user;
     }
 
@@ -72,32 +78,42 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User getByEmail(String email) {
-//        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         return getWithRoles(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users u left join user_roles ur on u.id=ur.user_id", ROW_MAPPER);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        HashMap<Integer, List<Role>> userRoles = new HashMap<>();
+        jdbcTemplate.query("SELECT * FROM user_roles", rs ->
+        {
+            userRoles.put(rs.getInt("user_id"), List.of(Role.valueOf(rs.getString("role"))));
+        });
+        for (User user : users) {
+            user.setRoles(userRoles.get(user.id()));
+        }
+        return users;
     }
 
-public void addRolesIntoTable(User user) {
+    public void addRolesIntoTable(User user) {
         Set<Role> roles = user.getRoles();
-        if(!roles.isEmpty()){
+        if (!roles.isEmpty()) {
             int batchSize = roles.size();
-            jdbcTemplate.batchUpdate("INSERT INTO user_roles(user_id, role) VALUES(?,?)",roles,batchSize, (ps, argument) -> {
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles(user_id, role) VALUES(?,?)", roles, batchSize, (ps, argument) -> {
                 ps.setInt(1, user.id());
                 ps.setString(2, argument.name());
             });
         }
-}
-    public void deleteRoles(User user){
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?",user.id());
+    }
+
+    public void deleteRoles(User user) {
+        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.id());
 
     }
-    public User getWithRoles(User user){
-        if(user!=null) {
+
+    public User getWithRoles(User user) {
+        if (user != null) {
             user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", Role.class, user.id()));
         }
         return user;

@@ -24,7 +24,7 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         super.delete(getId(request));
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/create")
@@ -40,11 +40,17 @@ public class JspMealController extends AbstractMealController {
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
         model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
-        return "meals";
+        return "/meals";
     }
 
-    @PostMapping
-    public String save(HttpServletRequest request, Model model) {
+    @GetMapping("/update")
+    public String update(HttpServletRequest request, Model model) {
+        model.addAttribute("meal", super.get(getId(request)));
+        return "mealForm";
+    }
+
+    @PostMapping("/meals")
+    public String save(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -55,7 +61,7 @@ public class JspMealController extends AbstractMealController {
         } else {
             super.create(meal);
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     private int getId(HttpServletRequest request) {

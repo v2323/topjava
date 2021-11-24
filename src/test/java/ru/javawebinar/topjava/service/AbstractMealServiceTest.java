@@ -92,6 +92,11 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void getAllAdminsMeals() {
+        MEAL_MATCHER.assertMatch(service.getAll(ADMIN_ID), adminMeals);
+    }
+
+    @Test
     public void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
                         LocalDate.of(2020, Month.JANUARY, 30),
@@ -106,7 +111,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        Assume.assumeTrue(checkJpaProfiles());
+        Assume.assumeTrue(isJpaTypeProfiles());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, null, "Description", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description", 9), USER_ID));

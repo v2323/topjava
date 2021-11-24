@@ -37,7 +37,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Before
     public void setup() {
         cacheManager.getCache("users").clear();
-        if (checkJpaProfiles()) {
+        if (isJpaTypeProfiles()) {
             jpaUtil.clear2ndLevelHibernateCache();
         }
     }
@@ -65,6 +65,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void deleteAdmin() {
+        service.delete(ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.get(ADMIN_ID));
+    }
+
+    @Test
     public void deletedNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
@@ -73,6 +79,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void get() {
         User user = service.get(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
+    }
+
+    @Test
+    public void getAdmin() {
+        User user = service.get(ADMIN_ID);
+        USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
@@ -101,7 +113,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        Assume.assumeTrue(checkJpaProfiles());
+        Assume.assumeTrue(isJpaTypeProfiles());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));

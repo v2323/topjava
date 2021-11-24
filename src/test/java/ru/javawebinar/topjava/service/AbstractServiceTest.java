@@ -28,16 +28,16 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
 
-    @Autowired
-    public Environment env;
-
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
+
+    @Autowired
+    private Environment env;
 
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
-    public boolean checkJpaProfiles() {
+    protected boolean isJpaTypeProfiles() {
         return env.acceptsProfiles(Profiles.of(ru.javawebinar.topjava.Profiles.JPA, ru.javawebinar.topjava.Profiles.DATAJPA));
     }
 

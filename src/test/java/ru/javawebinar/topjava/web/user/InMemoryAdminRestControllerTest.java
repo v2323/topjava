@@ -36,7 +36,7 @@ class InMemoryAdminRestControllerTest {
     }
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         // re-initialize
         repository.init();
     }

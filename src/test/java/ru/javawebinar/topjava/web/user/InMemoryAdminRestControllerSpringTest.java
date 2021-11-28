@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.user;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ class InMemoryAdminRestControllerSpringTest {
     private InMemoryUserRepository repository;
 
     @BeforeEach
-    void setup() {
+    public void setUp() {
         repository.init();
     }
 

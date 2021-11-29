@@ -8,19 +8,14 @@ import java.util.Objects;
 
 public class MealTo {
 
-//    @JsonProperty(value ="id")
     private final Integer id;
 
-//    @JsonProperty(value ="dateTime")
     private final LocalDateTime dateTime;
 
-//    @JsonProperty(value ="description")
     private final String description;
 
-//    @JsonProperty(value ="calories")
     private final int calories;
 
-//    @JsonProperty(value ="excess")
     private final boolean excess;
 
     @JsonCreator
@@ -31,7 +26,6 @@ public class MealTo {
         this.calories = calories;
         this.excess = excess;
     }
-
 
     public Integer getId() {
         return id;

@@ -7,15 +7,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
-import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -86,9 +83,9 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL+"filter?startDateTime=2020-01-30T13:00&endDateTime=2020-01-30T21:00"))
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDateTime=2020-01-30T13:00&endDateTime=2020-01-30T21:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(createTo(meal3, false), createTo(meal2,false)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(createTo(meal3, false), createTo(meal2, false)));
     }
 }

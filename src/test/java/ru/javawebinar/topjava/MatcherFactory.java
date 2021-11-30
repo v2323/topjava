@@ -21,6 +21,10 @@ public class MatcherFactory {
         return new Matcher<>(clazz, fieldsToIgnore);
     }
 
+    public static <T> Matcher<T> usingRecursiveComparison(Class<T> clazz, String... fieldsToIgnore) {
+        return new Matcher<>(clazz);
+    }
+
     public static class Matcher<T> {
         private final Class<T> clazz;
         private final String[] fieldsToIgnore;
@@ -32,6 +36,10 @@ public class MatcherFactory {
 
         public void assertMatch(T actual, T expected) {
             assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
+        }
+
+        public void assertMatchAllFields(T actual, T expected) {
+            assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
         }
 
         @SafeVarargs

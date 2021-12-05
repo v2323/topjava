@@ -5,10 +5,13 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
+<script src="resources/js/topjava.common.js" defer></script>
+<script src="resources/js/topjava.meals.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-<section>
-    <h3><spring:message code="meal.title"/></h3>
+<div class="jumbotron pt-4">
+    <div class="container">
+        <h3 class="text-center"><spring:message code="user.title"/></h3>
 
     <form method="get" action="meals/filter">
         <dl>
@@ -29,12 +32,13 @@
         </dl>
         <button type="submit"><spring:message code="meal.filter"/></button>
     </form>
-    <hr>
-    <a href="meals/create"><spring:message code="meal.add"/></a>
-    <hr>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-        <tr>
+        <button class="btn btn-primary" onclick="add()">
+            <span class="fa fa-plus"></span>
+            <spring:message code="common.add"/>
+        </button>
+        <table class="table table-striped" id="datatable">
+            <thead>
+            <tr>
             <th><spring:message code="meal.dateTime"/></th>
             <th><spring:message code="meal.description"/></th>
             <th><spring:message code="meal.calories"/></th>
@@ -58,7 +62,8 @@
             </tr>
         </c:forEach>
     </table>
-</section>
+    </div>
+</div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

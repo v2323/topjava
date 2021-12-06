@@ -101,7 +101,7 @@
                     <div class="form-group">
                         <label for="calories" class="col-form-label"><spring:message code="meal.calories"/></label>
                         <input type="number" class="form-control" id="calories" name="calories"
-                               placeholder="0"/>">
+                               placeholder="1000"/>
                     </div>
                 </form>
             </div>

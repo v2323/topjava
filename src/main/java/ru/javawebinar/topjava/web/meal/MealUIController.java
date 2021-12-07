@@ -38,7 +38,7 @@ public class MealUIController extends AbstractMealController {
     public void create(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
                        @RequestParam String description,
                        @RequestParam int calories) {
-        super.create(new Meal(null, dateTime, description, calories));
+        super.create(new Meal(dateTime, description, calories));
     }
 
     @Override
@@ -47,6 +47,7 @@ public class MealUIController extends AbstractMealController {
         return super.get(id);
     }
 
+    @Override
     @GetMapping("/filter")
     public List<MealTo> getBetween(
             @RequestParam @Nullable LocalDate startDate,

@@ -3,19 +3,17 @@ const mealsAjaxUrl = "profile/meals/";
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
     ajaxUrl: mealsAjaxUrl,
-    updateTable1: function () {
+    updateTable: function () {
         $.ajax({
-            url: ctx.ajaxUrl + "filter",
             type: "GET",
-            data: $('#filter').serialize()
-        }).done(updateTable);
+            url: mealsAjaxUrl + "filter",
+            data: $("#filter").serialize()
+        }).done(defaultUpdateTable);
     }
 }
 
-function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-    });
+function reloadd() {
+    $("#filter").reset();
 }
 
 // $(document).ready(function () {
@@ -46,7 +44,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })

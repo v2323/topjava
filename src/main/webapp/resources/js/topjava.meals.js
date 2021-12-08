@@ -12,11 +12,6 @@ const ctx = {
     }
 }
 
-function reloadd() {
-    $("#filter").reset();
-}
-
-// $(document).ready(function () {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({

@@ -7,6 +7,13 @@
 <body>
 <script src="resources/js/topjava.common.js" defer></script>
 <script src="resources/js/topjava.meals.js" defer></script>
+<script>
+    function resetFilter() {
+        $("#filter")[0].reset();
+        $(ctx.updateTable);
+    }
+</script>
+
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -37,7 +44,7 @@
                 <span class="fa fa-clock-o"></span>
                 <spring:message code="meal.filter"/>
             </button>
-            <button class="btn btn-primary" onclick="reloadd()">
+            <button class="btn btn-primary" onclick="resetFilter()">
                 <span class="fa fa-clock-o"></span>
                 <spring:message code="meal.filter"/>
             </button>

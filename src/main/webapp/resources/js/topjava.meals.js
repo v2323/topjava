@@ -17,28 +17,74 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
+// $(function () {
+//     makeEditable(
+//         $("#datatable").DataTable({
+//             "paging": false,
+//             "info": true,
+//             "columns": [
+//                 {
+//                     "data": "dateTime"
+//                 },
+//                 {
+//                     "data": "description"
+//                 },
+//                 {
+//                     "data": "calories"
+//                 },
+//                 {
+//                     "defaultContent": "Edit",
+//                     "orderable": false
+//                 },
+//                 {
+//                     "defaultContent": "Delete",
+//                     "orderable": false
+//                 }
+//             ],
+//             "order": [
+//                 [
+//                     0,
+//                     "desc"
+//                 ]
+//             ]
+//         })
+//     );
+// });
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (date, type, row) {
+                        if (type === "display") {
+                            return date.substring(0, 16);
+                        }
+                        return date;
+                    }
                 },
                 {
-                    "data": "description"
+                    "data": "description",
                 },
                 {
                     "data": "calories"
                 },
                 {
-                    "defaultContent": "Edit",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -46,7 +92,12 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (!data.enabled) {
+                    $(row).attr("data-meal-excess", data.excess);
+                }
+            }
         })
     );
 });

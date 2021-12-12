@@ -53,13 +53,7 @@ function clearFilter() {
 
 $(function () {
     makeEditable(
-        $("#datatable").DataTable({
-            "ajax": {
-                "url": mealAjaxUrl,
-                "dataSrc": ""
-            },
-            "paging": false,
-            "info": true,
+        {
             "columns": [
                 {
                     "data": "dateTime",
@@ -98,6 +92,6 @@ $(function () {
                     $(row).attr("data-meal-excess", data.excess);
                 }
             }
-        })
+        }
     );
 });

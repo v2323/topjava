@@ -17,40 +17,6 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
-// $(function () {
-//     makeEditable(
-//         $("#datatable").DataTable({
-//             "paging": false,
-//             "info": true,
-//             "columns": [
-//                 {
-//                     "data": "dateTime"
-//                 },
-//                 {
-//                     "data": "description"
-//                 },
-//                 {
-//                     "data": "calories"
-//                 },
-//                 {
-//                     "defaultContent": "Edit",
-//                     "orderable": false
-//                 },
-//                 {
-//                     "defaultContent": "Delete",
-//                     "orderable": false
-//                 }
-//             ],
-//             "order": [
-//                 [
-//                     0,
-//                     "desc"
-//                 ]
-//             ]
-//         })
-//     );
-// });
-
 $(function () {
     makeEditable(
         {
@@ -94,4 +60,25 @@ $(function () {
             }
         }
     );
+});
+
+var startDate = $('#startDate');
+var endDate = $('#endDate');
+startDate.datetimepicker({
+    format: 'Y/m/d',
+    onShow: function (ct) {
+        this.setOptions({
+            maxDate: endDate.val() ? endDate.val() : false
+        })
+    },
+    timepicker: false
+});
+endDate.datetimepicker({
+    format: 'Y/m/d',
+    onShow: function (ct) {
+        this.setOptions({
+            minDate: startDate.val() ? startDate.val() : false
+        })
+    },
+    timepicker: false
 });

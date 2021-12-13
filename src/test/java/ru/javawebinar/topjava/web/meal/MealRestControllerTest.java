@@ -102,4 +102,12 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
     }
+
+    @Test
+    void unauthorizedAccess() throws Exception {
+        {
+            perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime="))
+                    .andExpect(status().isUnauthorized());
+        }
+    }
 }

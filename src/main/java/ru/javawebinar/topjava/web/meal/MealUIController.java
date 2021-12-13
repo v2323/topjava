@@ -42,14 +42,6 @@ public class MealUIController extends AbstractMealController {
         super.delete(id);
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void create(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-//                       @RequestParam String description,
-//                       @RequestParam int calories) {
-//        super.create(new Meal(null, dateTime, description, calories));
-//    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {

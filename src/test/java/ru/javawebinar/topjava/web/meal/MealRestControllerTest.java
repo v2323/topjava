@@ -105,9 +105,7 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void unauthorizedAccess() throws Exception {
-        {
-            perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime="))
-                    .andExpect(status().isUnauthorized());
-        }
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=&endTime="))
+                .andExpect(status().isUnauthorized());
     }
 }

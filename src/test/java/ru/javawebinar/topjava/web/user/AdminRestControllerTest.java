@@ -142,4 +142,26 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
         assertFalse(userService.get(USER_ID).isEnabled());
     }
+
+    @Test
+    void updateWithInvalidFields() throws Exception {
+        User updated = getInvalidUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void createWithInvalidFields() throws Exception {
+        User newUser = getNewInvalid();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
 }

@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static java.time.LocalDateTime.of;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -72,7 +73,8 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         Meal updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -122,5 +124,27 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andExpect(TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
+    }
+
+    @Test
+    void updateWithInvalidFields() throws Exception {
+        Meal invalid = getInvalidUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void createWithInvalidFields() throws Exception {
+        Meal newMeal = getNewInvalid();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

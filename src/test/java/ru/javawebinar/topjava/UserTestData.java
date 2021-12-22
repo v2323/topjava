@@ -64,6 +64,21 @@ public class UserTestData {
         return updated;
     }
 
+    public static User getNewDuplicate() {
+        return new User(null, "New2", "user@yandex.ru", "newPass", 1555, false, new Date(), Collections.singleton(Role.ADMIN));
+    }
+
+    public static User getDuplicateUpdated() {
+        User updated = new User(admin);
+        updated.setEmail("user@yandex.ru");
+        updated.setName("UpdatedName");
+        updated.setCaloriesPerDay(330);
+        updated.setPassword("newPass");
+        updated.setEnabled(false);
+        updated.setRoles(Collections.singletonList(Role.ADMIN));
+        return updated;
+    }
+
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
     }

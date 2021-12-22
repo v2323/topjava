@@ -45,4 +45,12 @@ public class MealTestData {
     public static Meal getNewInvalid() {
         return new Meal(null, null, null, 300);
     }
+
+    public static Meal getNewDuplicate() {
+        return new Meal(null, meal5.getDateTime(), "Завтрак", 500);
+    }
+
+    public static Meal getDuplicateUpdated() {
+        return new Meal(MEAL1_ID, meal5.getDateTime(), "Завтрак", 500);
+    }
 }

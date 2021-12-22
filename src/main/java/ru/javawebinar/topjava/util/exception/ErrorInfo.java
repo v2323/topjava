@@ -10,4 +10,8 @@ public class ErrorInfo {
         this.type = type;
         this.detail = detail;
     }
+
+    public ErrorType getType() {
+        return type;
+    }
 }

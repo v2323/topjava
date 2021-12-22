@@ -11,7 +11,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
@@ -21,9 +20,7 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -32,14 +29,14 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 public class ExceptionInfoHandler {
     private static Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
 
-    private static final String EXCEPTION_DUPLICATE_EMAIL = "common.exception.duplicateEmail";
-    private static final String EXCEPTION_DUPLICATE_DATETIME = "common.exception.duplicateDateTime";
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "common.exception.duplicateEmail";
+    public static final String EXCEPTION_DUPLICATE_DATETIME = "common.exception.duplicateDateTime";
 
-//    @Autowired
+    //    @Autowired
     private final MessageSourceAccessor messageSourceAccessor;
 
     @Autowired
-    private ExceptionInfoHandler(MessageSource messageSource){
+    private ExceptionInfoHandler(MessageSource messageSource) {
         this.messageSourceAccessor = new MessageSourceAccessor(messageSource);
     }
 
@@ -64,11 +61,11 @@ public class ExceptionInfoHandler {
             String lowerCaseMsg = rootMsg.toLowerCase();
             for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()) {
                 if (lowerCaseMsg.contains(entry.getKey())) {
-                    return logAndGetErrorInfo(req, e,true, VALIDATION_ERROR, messageSourceAccessor.getMessage(entry.getValue()));
+                    return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR, messageSourceAccessor.getMessage(entry.getValue()));
                 }
             }
         }
-        return logAndGetErrorInfo(req, e,true, DATA_ERROR);
+        return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
@@ -86,20 +83,20 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler(BindException.class)
     public ErrorInfo getErrorResponse(HttpServletRequest req, BindException e) {
-        String [] detail = e.getBindingResult().getFieldErrors().stream()
-                        .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+        String[] detail = e.getBindingResult().getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                 .toArray(String[]::new);
         return logAndGetErrorInfo(req, e, true, APP_ERROR, detail);
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String ... detail) {
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String... detail) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + req.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, detail.length>0 ? detail : new String[]{rootCause.toString()});
+        return new ErrorInfo(req.getRequestURL(), errorType, detail.length > 0 ? detail : new String[]{rootCause.toString()});
     }
 }
